@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chatbox</title>
+	<style>
+html, body{
+	width: 100%;
+	height: 100%;
+}
+.header{
+	text-align: center;
+}
+#game-container{
+	margin-top: 25px;
+	position: inherit;
+	margin: auto;
+	border-style: solid;
+	border-radius: 10px;
+	border-color: gray;
+	width: 720px;
+	height: 374px;
+	padding-top: 5px;
+}
+#player1-box {
+	float: left;
+}
+#player2-box {
+	float: right;
+}
+.box {
+	width: 300px;
+	height: 310px;
+	margin: 25px;
+}
+#header{
+	height: 20px;
+}
+.screen{
+	text-align: center;
+}
+	</style>
+	<script src="https://code.jquery.com/jquery.js"></script>
+	<script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+<div class="jumbotron" id="game-container">
+	<div id="player1-box" class="thumbnail box">
+		<div class="thumbnail">
+		<h2 class="header">Player 1</h2>
+		</div>
+		<div id="player1-div" style="text-align: center">Waiting for a Player</div>
+		<div id="screen1" class="screen"></div>
+	</div>
+	<div id="player2-box" class="thumbnail box">
+		<div class="thumbnail">
+		<h2 class="header">Player 2</h2>
+		</div>
+		<div id="player2-div" style="text-align: center">Waiting for a Player</div>
+		<div id="screen2" class="screen"></div>
+	</div>
+</div>
+<div id="winInfo" style="text-align: center; font-size: 36px"></div>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		var ref = new Firebase("https://playgoround.firebaseio.com/");
+		var playerState = "watcher";
+		var playerName = "Rob";
+		var leaving = false;
+		var rpsButtons = "<div>Your Turn!</div><br><span><img src='http://3.bp.blogspot.com/-KHc70esXncY/T76RN0I7mKI/AAAAAAAAOwg/8xUnLhIcHGU/s1600/key%2Bholder.jpg' data-type='rock' style='height: 50px' class='rpsimg'><img src='http://thumbs.dreamstime.com/z/three-holed-paper-cartoon-piece-lined-binder-41748815.jpg' data-type='paper' style='height: 50px' class='rpsimg'><img src='http://www.how-to-draw-funny-cartoons.com/image-files/cartoon-scissors-7.gif' data-type='scissors' style='height: 50px' class='rpsimg'></span>";
+		ref.child('"Both"').on("child_added", function(snap){
+			if(snap.val().status == "none" && playerState == "watcher"){
+				$("#"+snap.val().div).html("<div>Waiting for a player</div><button class='join' data-player='"+snap.val().div+"'>Join</button>");
+			} else {
+				$("#"+snap.val().div).html("<h2>"+snap.val().status+"</h2>")
+			}
+		}, function(error){
+			console.log(error)
+		});
+		ref.child('"Both"').on("child_changed", function(snap){
+			if(snap.val().status == "none"){
+				$("#"+snap.val().div).html("<div>Waiting for a player</div><button class='join' data-player='"+snap.val().div+"'>Join</button>");
+			} else {
+				$("#"+snap.val().div).html("<h2>"+snap.val().status+"</h2>");
+			}
+			if(playerState != "watcher"){
+				$(".join").attr("style", "display: none");
+			}
+		}, function(error){
+			console.log(error)
+		});
+		function startGame(){
+			ref.child("Player1").update({"screen1": rpsButtons, "screen2": ""});
+			ref.child("Player2").update({"screen2": "<div>Waiting for opponent to choose</div>", "screen1": ""});
+		};
+		$("body").on("click", ".rpsimg", function(){
+			var type = $(this).data("type");
+			if(playerState == "Player1"){
+				ref.child('"Both"').child("choices").update({"p1": type});
+				ref.child("Player1").update({"screen1": "<div>Waiting for opponent to choose</div>"});
+				ref.child("Player2").update({"screen2": rpsButtons});
+			} else {
+				ref.child('"Both"').child("choices").update({"p2": type});
+			}
+		});
+		ref.child('"Both"').child("choices").on("value", function(snap){
+			if(snap.val().p1 != "" && snap.val().p2 != ""){
+				var one = snap.val().p1;
+				var two = snap.val().p2;
+				var s1 = "<img src='images/"+one+".jpg'>";
+				var s2 = "<img src='images/"+two+".jpg'>";
+				ref.child("Player1").update({"screen1": s1, "screen2": s2});
+				ref.child("Player2").update({"screen1": s1, "screen2": s2});
+				if((one == "rock" && two == "scissors") || (one == "scissors" && two == "paper") || (one == "paper" && two== "rock")){
+					$("#winInfo").html("Player 1 Wins!!");
+				} else if(one == two){
+					$("#winInfo").html("It's a draw!");
+				} else {
+					$("#winInfo").html("Player 2 Wins!!");
+				}
+				ref.child('"Both"').child("choices").update({"p1": "", "p2": ""});
+				setTimeout(function(){
+					$("#winInfo").html("");
+					startGame();
+				}, 3000);
+			};
+		}, function(error){
+			console.log(error)
+		});
+		ref.child("Player1").on("value", function(snap){
+			if(playerState == "Player1"){
+				$("#screen1").html(snap.val().screen1);
+				$("#screen2").html(snap.val().screen2);
+				if(snap.val().opponent != "none" && snap.val().status == "waiting" && !leaving){
+					ref.child("Player1").update({"status": "playing"});
+					ref.child("Player2").update({"status": "playing"});
+					startGame();
+				};
+			};
+		}, function(error){
+			console.log(error);
+		});
+		ref.child("Player2").on("value", function(snap){
+			if(playerState == "Player2"){
+				$("#screen1").html(snap.val().screen1);
+				$("#screen2").html(snap.val().screen2);
+				if(snap.val().opponent != "none" && snap.val().status == "waiting" && !leaving){
+					ref.child("Player2").update({"status": "playing"});
+					ref.child("Player1").update({"status": "playing"});
+					startGame();
+				};
+			}
+		}, function(error){
+			console.log(error);
+		});
+		$("body").on("click", ".join", function(){
+			playerName = prompt("Pick a screen name");
+			if($(this).data("player") == "player1-div"){
+				playerState = "Player1";
+				ref.child('"Both"').child("p1").update({"status": playerName});
+				ref.child("Player2").update({"opponent": playerName});
+			} else {
+				playerState = "Player2";
+				ref.child('"Both"').child("p2").update({"status": playerName});
+				ref.child("Player1").update({"opponent": playerName});
+			}
+			$(".join").attr("style", "display: none");
+		});
+		$( window ).unload(function() {
+			leaving = true;
+			if(playerState == "Player2"){
+				ref.child("Player2").update({"screen1": " ", "screen2": " ", "status": "waiting"});
+				ref.child("Player1").update({"screen1": " ", "screen2": " ", "opponent": "none", "status": "waiting"});
+				ref.child('"Both"').child("p2").update({"status": "none"});
+				ref.child('"Both"').child("choices").update({"p1": "", "p2": ""});
+			};
+			if(playerState == "Player1"){
+				ref.child("Player2").update({"screen1": " ", "screen2": " ", "opponent": "none", "status": "waiting"});
+				ref.child('"Both"').child("p1").update({"status": "none"});
+				ref.child("Player1").update({"screen1": " ", "screen2": " ", "status": "waiting"});
+				ref.child('"Both"').child("choices").update({"p1": "", "p2": ""});
+			};
+		});
+	});
+</script>
+</body>
+</html>
