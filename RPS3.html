@@ -10,6 +10,43 @@ html, body{
 .header{
 	text-align: center;
 }
+#chat-box {
+	margin-left: 7px;
+	margin-bottom: 4px;
+	margin-top: 7px;
+}
+#message{
+	margin-bottom: 4px;
+}
+#nameInput{
+	width: 300px;
+}
+#enterName{
+	text-align: center;
+}
+#submit{
+	margin: auto;
+	text-align: center;
+}
+#messageBoard {
+	height: 200px;
+	overflow-y: scroll;
+	width: 300px;
+}
+#message{
+	width: 300px;
+}
+#chat-container{
+	margin-top: 25px;
+	position: inherit;
+	margin: auto;
+	border-style: solid;
+	border-radius: 10px;
+	border-color: gray;
+	width: 320px;
+	height: 374px;
+	padding-top: 5px;
+}
 #game-container{
 	margin-top: 25px;
 	position: inherit;
@@ -24,6 +61,11 @@ html, body{
 #player1-box {
 	float: left;
 }
+.wins {
+	margin-right: 10px;
+	float: right;
+}
+
 #player2-box {
 	float: right;
 }
@@ -49,6 +91,7 @@ html, body{
 		<div class="thumbnail">
 		<h2 class="header">Player 1</h2>
 		</div>
+		<span class='wins'>Wins: <span id="wins1">0</span></span>
 		<div id="player1-div" style="text-align: center">Waiting for a Player</div>
 		<div id="screen1" class="screen"></div>
 	</div>
@@ -56,21 +99,40 @@ html, body{
 		<div class="thumbnail">
 		<h2 class="header">Player 2</h2>
 		</div>
+		<span class='wins'>Wins: <span id="wins2">0</span></span>
 		<div id="player2-div" style="text-align: center">Waiting for a Player</div>
 		<div id="screen2" class="screen"></div>
 	</div>
 </div>
 <div id="winInfo" style="text-align: center; font-size: 36px"></div>
+<div id="chat-container" class='jumbotron'>
+<div id="chat-box">
+	<div id="info"></div>
+	<div id="nameEntry" style="display: none">
+		<div id="enterName">Please enter your name:</div>
+		<input type="text" style="text-align: center" class="form-control" placeholder="John Doe" id="nameInput">
+		<button id="submit" class="btn btn-primary">Enter</button>
+	</div>
+	<div id="messageBoard">
+	<div id="chatRoom" style="display: none">
+	</div>
+	</div>
+	<div id="messageInput" style="display: none">
+		<input type="text" class="form-control" placeholder="message" id="message">
+		<button id="send" class="btn btn-primary">Send</button>
+	</div>
+</div>
+</div>
 <script type="text/javascript">
 	jQuery(document).ready(function(){
 		var ref = new Firebase("https://playgoround.firebaseio.com/");
 		var playerState = "watcher";
 		var playerName = "Rob";
 		var leaving = false;
-		var rpsButtons = "<div>Your Turn!</div><br><span><img src='http://3.bp.blogspot.com/-KHc70esXncY/T76RN0I7mKI/AAAAAAAAOwg/8xUnLhIcHGU/s1600/key%2Bholder.jpg' data-type='rock' style='height: 50px' class='rpsimg'><img src='http://thumbs.dreamstime.com/z/three-holed-paper-cartoon-piece-lined-binder-41748815.jpg' data-type='paper' style='height: 50px' class='rpsimg'><img src='http://www.how-to-draw-funny-cartoons.com/image-files/cartoon-scissors-7.gif' data-type='scissors' style='height: 50px' class='rpsimg'></span>";
+		var rpsButtons = "<div>Your Turn!</div><br><span><button class='btn btn-primary'><img src='images/rock.jpg' data-type='rock' style='height: 50px' class='rpsimg'></button><button class='btn btn-primary'><img src='images/paper.jpg' data-type='paper' style='height: 50px' class='rpsimg'></button><button class='btn btn-primary'><img src='images/scissors.jpg' data-type='scissors' style='height: 50px' class='rpsimg'></button></span>";
 		ref.child('"Both"').on("child_added", function(snap){
 			if(snap.val().status == "none" && playerState == "watcher"){
-				$("#"+snap.val().div).html("<div>Waiting for a player</div><button class='join' data-player='"+snap.val().div+"'>Join</button>");
+				$("#"+snap.val().div).html("<div>Waiting for a player</div><button class='join btn btn-primary' data-player='"+snap.val().div+"'>Join</button>");
 			} else {
 				$("#"+snap.val().div).html("<h2>"+snap.val().status+"</h2>")
 			}
@@ -79,7 +141,9 @@ html, body{
 		});
 		ref.child('"Both"').on("child_changed", function(snap){
 			if(snap.val().status == "none"){
-				$("#"+snap.val().div).html("<div>Waiting for a player</div><button class='join' data-player='"+snap.val().div+"'>Join</button>");
+				$("#wins1").html("0");
+				$("#wins2").html("0");
+				$("#"+snap.val().div).html("<div>Waiting for a player</div><button class='join btn btn-primary' data-player='"+snap.val().div+"'>Join</button>");
 			} else {
 				$("#"+snap.val().div).html("<h2>"+snap.val().status+"</h2>");
 			}
@@ -113,10 +177,12 @@ html, body{
 				ref.child("Player2").update({"screen1": s1, "screen2": s2});
 				if((one == "rock" && two == "scissors") || (one == "scissors" && two == "paper") || (one == "paper" && two== "rock")){
 					$("#winInfo").html("Player 1 Wins!!");
+					$("#wins1").html(parseInt($("#wins1").html())+1);
 				} else if(one == two){
 					$("#winInfo").html("It's a draw!");
 				} else {
 					$("#winInfo").html("Player 2 Wins!!");
+					$("#wins2").html(parseInt($("#wins2").html())+1);
 				}
 				ref.child('"Both"').child("choices").update({"p1": "", "p2": ""});
 				setTimeout(function(){
@@ -181,6 +247,74 @@ html, body{
 				ref.child('"Both"').child("choices").update({"p1": "", "p2": ""});
 			};
 		});
+		var fireData = new Firebase("https://flickering-inferno-6716.firebaseio.com/");
+		if(localStorage.getItem("name") == null){
+			$("#nameEntry").attr("style", "display: initial");
+		} else {
+			$("#info").html("<div style='text-align: center'><span>Are you "+localStorage.getItem("name")+"? </span><span><button class='btn btn-primary' id='confirm'>Yes</button></span> <span><button class='btn btn-primary' id='deny'>No</button></span></div>");
+			console.log(localStorage.getItem("name"));
+		};
+		$(window).keydown(function(event){
+			if(event.keyCode == 13){
+				if($("#messageInput").attr("style") == "display: initial"){
+					sendMessage();
+				} else if($("#nameEntry").attr("style") == "display: initial")	{
+					submitName();
+				};
+			};
+		});
+		$("body").on("click", "#confirm", function(){
+			$("#chatRoom").attr("style", "display: initial");
+			$("#messageInput").attr("style", "display: initial");
+			$("#info").html("");
+			$("#messageBoard").addClass("thumbnail");
+			$("#messageBoard").animate({'scrollTop': '2000'}, 1);
+			$("#message").focus();
+			$("#message").select();
+			getChatroom();
+		});
+		$("body").on("click", "#deny", function(){
+			$("#nameEntry").attr("style", "display: initial");
+			$("#info").html("");
+			$("#nameInput").focus();
+			$("#nameInput").select();
+		});
+		function submitName(){
+			if($("#nameInput").val() != ""){
+				localStorage.setItem("name", $("#nameInput").val());
+				$("#nameEntry").attr("style", "display: none");
+				$("#chatRoom").attr("style", "display: initial");
+				$("#messageInput").attr("style", "display: initial");
+				$("#messageBoard").addClass("thumbnail");
+				$("#messageBoard").animate({'scrollTop': '2000'}, 1);
+				$("#message").focus();
+				$("#message").select();
+				getChatroom();
+			};
+		};
+		function sendMessage(){
+			var message = $("#message").val();
+			var name = localStorage.getItem("name");
+			fireData.push({
+				Name: name,
+				Message: message
+			});
+			$("#message").val("");
+		}
+		$("#submit").click(submitName);
+		$("#send").click(sendMessage);
+		function getChatroom(){
+			fireData.on("child_added", function(snap){
+			if(snap.val().Name == localStorage.getItem("name")){
+				$("#chatRoom").append("<div style='margin-top: 1px; background-color: #66CCFF; border-radius: 5px; border-color: transparent'><b>"+snap.val().Name+":</b> "+snap.val().Message+"</div>");
+			} else {
+				$("#chatRoom").append("<div style='margin-top: 1px; background-color: #99CC66; border-radius: 5px; border-color: transparent'><b>"+snap.val().Name+": </b>"+snap.val().Message+"</div>");
+			}
+			$("#messageBoard").animate({'scrollTop': '1000'}, 1);
+		}, function (errorObject) {
+  			console.log("The read failed: " + errorObject.code);
+		});
+		}
 	});
 </script>
 </body>
