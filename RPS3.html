@@ -20,6 +20,7 @@ html, body{
 }
 #nameInput{
 	width: 300px;
+	margin-left: 270px;
 }
 #enterName{
 	text-align: center;
@@ -44,7 +45,7 @@ html, body{
 	border-radius: 10px;
 	border-color: gray;
 	width: 320px;
-	height: 374px;
+	height: 324px;
 	padding-top: 5px;
 }
 #game-container{
@@ -57,6 +58,11 @@ html, body{
 	width: 720px;
 	height: 374px;
 	padding-top: 5px;
+}
+#nameEntry{
+	position: inherit;
+	margin: auto;
+	width: 300px;
 }
 #player1-box {
 	float: left;
@@ -104,15 +110,16 @@ html, body{
 		<div id="screen2" class="screen"></div>
 	</div>
 </div>
-<div id="winInfo" style="text-align: center; font-size: 36px"></div>
-<div id="chat-container" class='jumbotron'>
-<div id="chat-box">
-	<div id="info"></div>
-	<div id="nameEntry" style="display: none">
+<div id="winInfo" style="text-align: center; font-size: 36px">
+</div>
+<div id="nameEntry" style="display: none">
 		<div id="enterName">Please enter your name:</div>
 		<input type="text" style="text-align: center" class="form-control" placeholder="John Doe" id="nameInput">
 		<button id="submit" class="btn btn-primary">Enter</button>
-	</div>
+</div>
+<div id="chat-container" class='jumbotron'>
+<div id="chat-box">
+	<div id="info"></div>
 	<div id="messageBoard">
 	<div id="chatRoom" style="display: none">
 	</div>
@@ -127,8 +134,9 @@ html, body{
 	jQuery(document).ready(function(){
 		var ref = new Firebase("https://playgoround.firebaseio.com/");
 		var playerState = "watcher";
-		var playerName = "Rob";
+		var playerName;
 		var leaving = false;
+		localStorage.setItem("confirmed", "false")
 		var rpsButtons = "<div>Your Turn!</div><br><span><button class='btn btn-primary'><img src='images/rock.jpg' data-type='rock' style='height: 50px' class='rpsimg'></button><button class='btn btn-primary'><img src='images/paper.jpg' data-type='paper' style='height: 50px' class='rpsimg'></button><button class='btn btn-primary'><img src='images/scissors.jpg' data-type='scissors' style='height: 50px' class='rpsimg'></button></span>";
 		ref.child('"Both"').on("child_added", function(snap){
 			if(snap.val().status == "none" && playerState == "watcher"){
@@ -220,7 +228,12 @@ html, body{
 			console.log(error);
 		});
 		$("body").on("click", ".join", function(){
-			playerName = prompt("Pick a screen name");
+			if(localStorage.getItem("name") != null && localStorage.getItem("confirmed") == "true"){
+				playerName = localStorage.getItem("name");
+			} else {
+				alert("Please confirm your name first");
+				return;
+			}
 			if($(this).data("player") == "player1-div"){
 				playerState = "Player1";
 				ref.child('"Both"').child("p1").update({"status": playerName});
@@ -251,7 +264,7 @@ html, body{
 		if(localStorage.getItem("name") == null){
 			$("#nameEntry").attr("style", "display: initial");
 		} else {
-			$("#info").html("<div style='text-align: center'><span>Are you "+localStorage.getItem("name")+"? </span><span><button class='btn btn-primary' id='confirm'>Yes</button></span> <span><button class='btn btn-primary' id='deny'>No</button></span></div>");
+			$("#winInfo").html("<div style='text-align: center'><span>Are you "+localStorage.getItem("name")+"? </span><span><button class='btn btn-primary' id='confirm'>Yes</button></span> <span><button class='btn btn-primary' id='deny'>No</button></span></div>");
 			console.log(localStorage.getItem("name"));
 		};
 		$(window).keydown(function(event){
@@ -266,16 +279,17 @@ html, body{
 		$("body").on("click", "#confirm", function(){
 			$("#chatRoom").attr("style", "display: initial");
 			$("#messageInput").attr("style", "display: initial");
-			$("#info").html("");
+			$("#winInfo").html("");
 			$("#messageBoard").addClass("thumbnail");
 			$("#messageBoard").animate({'scrollTop': '2000'}, 1);
 			$("#message").focus();
 			$("#message").select();
+			localStorage.setItem("confirmed", "true");
 			getChatroom();
 		});
 		$("body").on("click", "#deny", function(){
 			$("#nameEntry").attr("style", "display: initial");
-			$("#info").html("");
+			$("#winInfo").html("");
 			$("#nameInput").focus();
 			$("#nameInput").select();
 		});
@@ -290,6 +304,7 @@ html, body{
 				$("#message").focus();
 				$("#message").select();
 				getChatroom();
+				localStorage.setItem("confirmed", "true");
 			};
 		};
 		function sendMessage(){
