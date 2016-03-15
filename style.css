@@ -1,0 +1,95 @@
+html, body{
+	width: 100%;
+	height: 100%;
+}
+.header{
+	text-align: center;
+}
+#chat-box {
+	margin-left: 7px;
+	margin-bottom: 4px;
+	margin-top: 7px;
+	float: left;
+}
+#message{
+	margin-bottom: 4px;
+}
+#nameInput{
+	width: 300px;
+	margin-left: 5px;
+}
+#enterName{
+	text-align: center;
+}
+#winInfo{
+	margin-top: 50px;
+}
+#submit{
+	margin-left: 130px;
+	margin-top: 10px;
+	text-align: center;
+}
+#messageBoard {
+	height: 200px;
+	overflow-y: scroll;
+	width: 300px;
+}
+#message{
+	width: 300px;
+}
+#chat-container{
+	margin: auto;
+	margin-top: 25px;
+	border-style: solid;
+	border-radius: 10px;
+	border-color: gray;
+	width: 320px;
+	height: 324px;
+	padding-top: 5px;
+}
+#game-container{
+	background-color: #337ab7;
+	position: inherit;
+	margin: auto;
+	margin-top: 25px;
+	border-style: solid;
+	border-radius: 10px;
+	border-color: gray;
+	width: 720px;
+	height: 730px;
+	padding-top: 5px;
+}
+#info-container{
+	background-color: white ;
+	margin: auto;
+	margin-top: 25px;
+	border-style: solid;
+	border-radius: 10px;
+	border-color: gray;
+	width: 320px;
+	height: 324px;
+	padding-top: 5px;
+}
+#nameEntry{
+	margin: auto;
+	width: 300px;
+}
+.wins {
+	margin-left: 25px;
+	font-size: 24px;
+	clear: both;
+}
+#send{
+	margin: auto;
+}
+.box {
+	width: 300px;
+	height: 310px;
+	margin: 25px;
+}
+#header{
+	height: 20px;
+}
+.screen{
+	text-align: center;
+}
