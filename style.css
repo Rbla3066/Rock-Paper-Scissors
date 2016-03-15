@@ -20,9 +20,18 @@ html, body{
 }
 #enterName{
 	text-align: center;
+	font-size: 24px;
+}
+#winDisplay{
+	position: relative;
+	top: 240px;
+	left: 45px;
 }
 #winInfo{
-	margin-top: 50px;
+	margin-top: 30px;
+}
+.join{
+	margin-top: 10px;
 }
 #submit{
 	margin-left: 130px;
