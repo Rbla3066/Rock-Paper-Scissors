@@ -58,20 +58,17 @@ html, body{
 }
 #game-container{
 	background-color: #337ab7;
+	padding-left: 29px;
 	position: inherit;
 	margin: auto;
-	margin-top: 25px;
+	width: 750px;
 	border-style: solid;
 	border-radius: 10px;
 	border-color: gray;
-	width: 720px;
-	height: 730px;
-	padding-top: 5px;
 }
 #info-container{
 	background-color: white ;
 	margin: auto;
-	margin-top: 25px;
 	border-style: solid;
 	border-radius: 10px;
 	border-color: gray;
@@ -83,18 +80,17 @@ html, body{
 	margin: auto;
 	width: 300px;
 }
+#player2-box{
+	margin-top: 27px;
+}
 .wins {
 	margin-left: 25px;
 	font-size: 24px;
 	clear: both;
 }
-#send{
-	margin: auto;
-}
 .box {
 	width: 300px;
 	height: 310px;
-	margin: 25px;
 }
 #header{
 	height: 20px;
