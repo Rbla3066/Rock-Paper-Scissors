@@ -14,13 +14,13 @@ html, body{
 	margin-left: 7px;
 	margin-bottom: 4px;
 	margin-top: 7px;
+	float: left;
 }
 #message{
 	margin-bottom: 4px;
 }
 #nameInput{
 	width: 300px;
-	margin-left: 270px;
 }
 #enterName{
 	text-align: center;
@@ -38,9 +38,8 @@ html, body{
 	width: 300px;
 }
 #chat-container{
-	margin-top: 25px;
-	position: inherit;
 	margin: auto;
+	margin-top: 25px;
 	border-style: solid;
 	border-radius: 10px;
 	border-color: gray;
@@ -49,30 +48,34 @@ html, body{
 	padding-top: 5px;
 }
 #game-container{
-	margin-top: 25px;
 	position: inherit;
 	margin: auto;
+	margin-top: 25px;
 	border-style: solid;
 	border-radius: 10px;
 	border-color: gray;
 	width: 720px;
-	height: 374px;
+	height: 730px;
+	padding-top: 5px;
+}
+#info-container{
+	margin: auto;
+	margin-top: 25px;
+	border-style: solid;
+	border-radius: 10px;
+	border-color: gray;
+	width: 320px;
+	height: 324px;
 	padding-top: 5px;
 }
 #nameEntry{
-	position: inherit;
 	margin: auto;
 	width: 300px;
 }
 #player1-box {
-	float: left;
 }
 .wins {
-	margin-right: 10px;
-	float: right;
-}
-
-#player2-box {
+	margin-right: 10px;	
 	float: right;
 }
 .box {
@@ -93,31 +96,25 @@ html, body{
 </head>
 <body>
 <div class="jumbotron" id="game-container">
-	<div id="player1-box" class="thumbnail box">
+<div class="row">
+<div class="col-md-6 col-sm-6"><div id="info-container"><div id="winInfo" style="text-align: center; font-size: 36px">
+</div>
+<div id="nameEntry" style="display: none">
+		<div id="enterName">Please enter your name:</div>
+		<input type="text" style="text-align: center" class="form-control" placeholder="John Doe" id="nameInput">
+		<button id="submit" class="btn btn-primary">Enter</button>
+</div></div></div>
+<div class="col-md-6 col-sm-6"><div id="player1-box" class="thumbnail box">
 		<div class="thumbnail">
 		<h2 class="header">Player 1</h2>
 		</div>
 		<span class='wins'>Wins: <span id="wins1">0</span></span>
 		<div id="player1-div" style="text-align: center">Waiting for a Player</div>
 		<div id="screen1" class="screen"></div>
-	</div>
-	<div id="player2-box" class="thumbnail box">
-		<div class="thumbnail">
-		<h2 class="header">Player 2</h2>
-		</div>
-		<span class='wins'>Wins: <span id="wins2">0</span></span>
-		<div id="player2-div" style="text-align: center">Waiting for a Player</div>
-		<div id="screen2" class="screen"></div>
-	</div>
+	</div></div>
 </div>
-<div id="winInfo" style="text-align: center; font-size: 36px">
-</div>
-<div id="nameEntry" style="display: none">
-		<div id="enterName">Please enter your name:</div>
-		<input type="text" style="text-align: center" class="form-control" placeholder="John Doe" id="nameInput">
-		<button id="submit" class="btn btn-primary">Enter</button>
-</div>
-<div id="chat-container" class='jumbotron'>
+<div class="row">
+	<div class="col-md-6 col-sm-6"><div id="chat-container" class='jumbotron'>
 <div id="chat-box">
 	<div id="info"></div>
 	<div id="messageBoard">
@@ -129,6 +126,16 @@ html, body{
 		<button id="send" class="btn btn-primary">Send</button>
 	</div>
 </div>
+</div></div>
+	<div class="col-md-6 col-sm-6"><div id="player2-box" class="thumbnail box">
+		<div class="thumbnail">
+		<h2 class="header">Player 2</h2>
+		</div>
+		<span class='wins'>Wins: <span id="wins2">0</span></span>
+		<div id="player2-div" style="text-align: center">Waiting for a Player</div>
+		<div id="screen2" class="screen"></div>
+	</div></div>
+</div>	
 </div>
 <script type="text/javascript">
 	jQuery(document).ready(function(){
