@@ -4,7 +4,7 @@ jQuery(document).ready(function(){
 		var playerName;
 		var leaving = false;
 		localStorage.setItem("confirmed", "false")
-		var rpsButtons = "<div>Your Turn!</div><br><span><button class='btn btn-primary'><img src='images/rock.jpg' data-type='rock' style='height: 50px' class='rpsimg'></button><button class='btn btn-primary'><img src='images/paper.jpg' data-type='paper' style='height: 50px' class='rpsimg'></button><button class='btn btn-primary'><img src='images/scissors.jpg' data-type='scissors' style='height: 50px' class='rpsimg'></button></span>";
+		var rpsButtons = "<div style='font-size: 24px'>Your Turn!</div><br><span><button class='btn btn-primary'><img src='images/rock.jpg' data-type='rock' style='height: 50px' class='rpsimg'></button><button class='btn btn-primary'><img src='images/paper.jpg' data-type='paper' style='height: 50px' class='rpsimg'></button><button class='btn btn-primary'><img src='images/scissors.jpg' data-type='scissors' style='height: 50px' class='rpsimg'></button></span>";
 		ref.child('"Both"').on("child_added", function(snap){
 			if(snap.val().status == "none" && playerState == "watcher"){
 				$("#"+snap.val().div).html("<div>Waiting for a player</div><button class='join btn btn-primary' data-player='"+snap.val().div+"'>Join</button>");
@@ -30,13 +30,13 @@ jQuery(document).ready(function(){
 		});
 		function startGame(){
 			ref.child("Player1").update({"screen1": rpsButtons, "screen2": ""});
-			ref.child("Player2").update({"screen2": "<div>Waiting for opponent to choose</div>", "screen1": ""});
+			ref.child("Player2").update({"screen2": "<div style='font-size: 24px'>Waiting for opponent to choose</div>", "screen1": ""});
 		};
 		$("body").on("click", ".rpsimg", function(){
 			var type = $(this).data("type");
 			if(playerState == "Player1"){
 				ref.child('"Both"').child("choices").update({"p1": type});
-				ref.child("Player1").update({"screen1": "<div>Waiting for opponent to choose</div>"});
+				ref.child("Player1").update({"screen1": "<div style='font-size: 24px'>Waiting for opponent to choose</div>"});
 				ref.child("Player2").update({"screen2": rpsButtons});
 			} else {
 				ref.child('"Both"').child("choices").update({"p2": type});
@@ -113,6 +113,21 @@ jQuery(document).ready(function(){
 			$(".join").attr("style", "display: none");
 		});
 		$( window ).unload(function() {
+			leaving = true;
+			if(playerState == "Player2"){
+				ref.child("Player2").update({"screen1": " ", "screen2": " ", "status": "waiting"});
+				ref.child("Player1").update({"screen1": " ", "screen2": " ", "opponent": "none", "status": "waiting"});
+				ref.child('"Both"').child("p2").update({"status": "none"});
+				ref.child('"Both"').child("choices").update({"p1": "", "p2": ""});
+			};
+			if(playerState == "Player1"){
+				ref.child("Player2").update({"screen1": " ", "screen2": " ", "opponent": "none", "status": "waiting"});
+				ref.child('"Both"').child("p1").update({"status": "none"});
+				ref.child("Player1").update({"screen1": " ", "screen2": " ", "status": "waiting"});
+				ref.child('"Both"').child("choices").update({"p1": "", "p2": ""});
+			};
+		});
+		$( document ).unload(function() {
 			leaving = true;
 			if(playerState == "Player2"){
 				ref.child("Player2").update({"screen1": " ", "screen2": " ", "status": "waiting"});
