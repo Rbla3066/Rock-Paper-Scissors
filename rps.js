@@ -105,42 +105,20 @@ jQuery(document).ready(function(){
 				playerState = "Player1";
 				ref.child('"Both"').child("p1").update({"status": playerName});
 				ref.child("Player2").update({"opponent": playerName});
+				ref.child("Player2").onDisconnect().update({"screen1": " ", "screen2": " ", "status": "waiting"});
+				ref.child("Player1").onDisconnect().update({"screen1": " ", "screen2": " ", "opponent": "none", "status": "waiting"});
+				ref.child('"Both"').child("p2").onDisconnect().update({"status": "none"});
+				ref.child('"Both"').child("choices").onDisconnect().update({"p1": "", "p2": ""});
 			} else {
 				playerState = "Player2";
 				ref.child('"Both"').child("p2").update({"status": playerName});
-				ref.child("Player1").update({"opponent": playerName});
+				ref.child("Player1").onDisconnect().update({"opponent": playerName});
+				ref.child("Player2").onDisconnect().update({"screen1": " ", "screen2": " ", "opponent": "none", "status": "waiting"});
+				ref.child('"Both"').child("p1").onDisconnect().update({"status": "none"});
+				ref.child("Player1").onDisconnect().update({"screen1": " ", "screen2": " ", "status": "waiting"});
+				ref.child('"Both"').child("choices").onDisconnect().update({"p1": "", "p2": ""});
 			}
 			$(".join").attr("style", "display: none");
-		});
-		$( window ).unload(function() {
-			leaving = true;
-			if(playerState == "Player2"){
-				ref.child("Player2").update({"screen1": " ", "screen2": " ", "status": "waiting"});
-				ref.child("Player1").update({"screen1": " ", "screen2": " ", "opponent": "none", "status": "waiting"});
-				ref.child('"Both"').child("p2").update({"status": "none"});
-				ref.child('"Both"').child("choices").update({"p1": "", "p2": ""});
-			};
-			if(playerState == "Player1"){
-				ref.child("Player2").update({"screen1": " ", "screen2": " ", "opponent": "none", "status": "waiting"});
-				ref.child('"Both"').child("p1").update({"status": "none"});
-				ref.child("Player1").update({"screen1": " ", "screen2": " ", "status": "waiting"});
-				ref.child('"Both"').child("choices").update({"p1": "", "p2": ""});
-			};
-		});
-		$( document ).unload(function() {
-			leaving = true;
-			if(playerState == "Player2"){
-				ref.child("Player2").update({"screen1": " ", "screen2": " ", "status": "waiting"});
-				ref.child("Player1").update({"screen1": " ", "screen2": " ", "opponent": "none", "status": "waiting"});
-				ref.child('"Both"').child("p2").update({"status": "none"});
-				ref.child('"Both"').child("choices").update({"p1": "", "p2": ""});
-			};
-			if(playerState == "Player1"){
-				ref.child("Player2").update({"screen1": " ", "screen2": " ", "opponent": "none", "status": "waiting"});
-				ref.child('"Both"').child("p1").update({"status": "none"});
-				ref.child("Player1").update({"screen1": " ", "screen2": " ", "status": "waiting"});
-				ref.child('"Both"').child("choices").update({"p1": "", "p2": ""});
-			};
 		});
 		var fireData = new Firebase("https://flickering-inferno-6716.firebaseio.com/");
 		if(localStorage.getItem("name") == null){

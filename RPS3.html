@@ -9,57 +9,64 @@
 	<script src="rps.js"></script>
 </head>
 <body>
-<div class="jumbotron" id="game-container">
-<div class="row">
-<div class="col-md-6 col-sm-6">
-<div id="info-container">
-<div id="winDisplay">
-<span class='wins'>Player 1 Wins: <span id="wins1">0</span>
-</span>
-<br>
-<span class='wins'>Player 2 Wins: <span id="wins2">0</span></span>
-</div>
-<div id="winInfo" style="text-align: center; font-size: 36px">
-</div>
-<div id="nameEntry" style="display: none">
-		<div id="enterName">Please enter your name:</div>
-		<input type="text" style="text-align: center" class="form-control" placeholder="John Doe" id="nameInput">
-		<button id="submit" class="btn btn-primary">Enter</button>
-		<br>
-</div>
-</div>
-</div>
-<div class="col-md-6 col-sm-6"><div id="player1-box" class="thumbnail box">
-		<div class="thumbnail" style="background-color: #66FF66">
-		<h2 class="header">Player 1</h2>
+	<div class="jumbotron" id="game-container">
+		<div class="row">
+			<div class="col-md-6 col-sm-6">
+				<div id="info-container">
+					<div id="winDisplay">
+						<span class='wins'>Player 1 Wins: 
+							<span id="wins1">0</span>
+						</span>
+						<br>
+						<span class='wins'>Player 2 Wins: 
+							<span id="wins2">0</span>
+						</span>
+					</div>
+					<div id="winInfo" style="text-align: center; font-size: 36px">
+					</div>
+					<div id="nameEntry" style="display: none">
+						<div id="enterName">Please enter your name:</div>
+						<input type="text" style="text-align: center" class="form-control" placeholder="John Doe" id="nameInput">
+						<button id="submit" class="btn btn-primary">Enter</button>
+						<br>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div id="player1-box" class="thumbnail box">
+					<div class="thumbnail" style="background-color: #66FF66">
+						<h2 class="header">Player 1</h2>
+					</div>
+					<div id="player1-div" style="text-align: center; font-size: 24px">Waiting for a Player</div>
+					<div id="screen1" class="screen"></div>
+				</div>
+			</div>
 		</div>
-		<div id="player1-div" style="text-align: center; font-size: 24px">Waiting for a Player</div>
-		<div id="screen1" class="screen"></div>
-	</div></div>
-</div>
-<div class="row">
-	<div class="col-md-6 col-sm-6"><div id="chat-container" class='jumbotron'>
-<div id="chat-box">
-	<div id="info"></div>
-	<div id="messageBoard">
-	<div id="chatRoom" style="display: none">
+		<div class="row">
+			<div class="col-md-6 col-sm-6">
+				<div id="chat-container" class='jumbotron'>
+					<div id="chat-box">
+						<div id="info"></div>
+						<div id="messageBoard">
+							<div id="chatRoom" style="display: none"></div>
+						</div>
+						<div id="messageInput" style="display: none">
+							<input type="text" class="form-control" placeholder="message" id="message">
+							<button id="send" class="btn btn-primary">Send</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div id="player2-box" class="thumbnail box">
+					<div class="thumbnail" style="background-color: #66FF66">
+						<h2 class="header">Player 2</h2>
+					</div>
+					<div id="player2-div" style="text-align: center; font-size: 24px">Waiting for a Player</div>
+					<div id="screen2" class="screen"></div>
+				</div>
+			</div>
+		</div>	
 	</div>
-	</div>
-	<div id="messageInput" style="display: none">
-		<input type="text" class="form-control" placeholder="message" id="message">
-		<button id="send" class="btn btn-primary">Send</button>
-	</div>
-</div>
-</div></div>
-	<div class="col-md-6 col-sm-6">
-	<div id="player2-box" class="thumbnail box">
-		<div class="thumbnail" style="background-color: #66FF66">
-		<h2 class="header">Player 2</h2>
-		</div>
-		<div id="player2-div" style="text-align: center; font-size: 24px">Waiting for a Player</div>
-		<div id="screen2" class="screen"></div>
-	</div></div>
-</div>	
-</div>
 </body>
 </html>
